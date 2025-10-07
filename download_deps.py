@@ -64,7 +64,13 @@ if __name__ == "__main__":
         filename = url[1] if isinstance(url, list) else url.split("/")[-1]
         print(f"Downloading {filename} from {download_url}...")
         if not os.path.exists(filename):
-            urllib.request.urlretrieve(download_url, filename)
+            import urllib.request
+            req = urllib.request.Request(
+                download_url,
+                headers={"User-Agent": "Mozilla/5.0"}
+            )
+            with urllib.request.urlopen(req) as resp, open(filename, "wb") as out_file:
+                out_file.write(resp.read())
 
     local_dir = os.path.abspath('nltk_data')
     for data in ['wordnet', 'punkt', 'punkt_tab']:

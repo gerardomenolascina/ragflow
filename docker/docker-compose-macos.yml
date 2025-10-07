@@ -3,6 +3,7 @@ include:
 
 services:
   ragflow:
+    image: infiniflow/ragflow:nightly
     platform: linux/amd64
     depends_on:
       mysql:

@@ -120,7 +120,8 @@ def rm(tenant_id, user_id):
 @login_required
 def tenant_list():
     try:
-        users = UserTenantService.get_tenants_by_user_id(current_user.id)
+        role = request.args.get('role')
+        users = UserTenantService.get_tenants_by_user_id(current_user.id, role=role)
         for u in users:
             u["delta_seconds"] = delta_seconds(str(u["update_date"]))
         return get_json_result(data=users)

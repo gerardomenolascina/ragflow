@@ -334,7 +334,7 @@ export const useDeleteTenantUser = () => {
   return { data, loading, deleteTenantUser: mutateAsync };
 };
 
-export const useListTenant = () => {
+export const useListTenant = (role?: string) => {
   const { data: tenantInfo } = useFetchTenantInfo();
   const tenantId = tenantInfo.tenant_id;
   const {
@@ -342,18 +342,22 @@ export const useListTenant = () => {
     isFetching: loading,
     refetch,
   } = useQuery<ITenant[]>({
-    queryKey: ['listTenant', tenantId],
+    queryKey: ['listTenant', tenantId, role],
     initialData: [],
     gcTime: 0,
     enabled: !!tenantId,
     queryFn: async () => {
-      const { data } = await listTenant();
+      const { data } = await listTenant(role);
 
       return data?.data ?? [];
     },
   });
 
   return { data, loading, refetch };
+};
+
+export const useListTenantInvitations = () => {
+  return useListTenant('invite');
 };
 
 export const useAgreeTenant = () => {

@@ -141,7 +141,8 @@ export const deleteTenantUser = ({
   userId: string;
 }) => request.delete(api.deleteTenantUser(tenantId, userId));
 
-export const listTenant = () => request.get(api.listTenant);
+export const listTenant = (role?: string) => 
+  request.get(api.listTenant, { params: role ? { role } : undefined });
 
 export const agreeTenant = (tenantId: string) =>
   request.put(api.agreeTenant(tenantId));

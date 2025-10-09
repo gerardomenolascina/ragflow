@@ -275,7 +275,7 @@ class UserTenantService(CommonService):
 
     @classmethod
     @DB.connection_context()
-    def get_tenants_by_user_id(cls, user_id):
+    def get_tenants_by_user_id(cls, user_id, role=None):
         fields = [
             cls.model.tenant_id,
             cls.model.role,
@@ -284,9 +284,14 @@ class UserTenantService(CommonService):
             User.avatar,
             User.update_date
         ]
-        return list(cls.model.select(*fields)
-                    .join(User, on=((cls.model.tenant_id == User.id) & (UserTenant.user_id == user_id) & (UserTenant.status == StatusEnum.VALID.value)))
-                    .where(cls.model.status == StatusEnum.VALID.value).dicts())
+        query = cls.model.select(*fields).join(
+            User, on=((cls.model.tenant_id == User.id) & (UserTenant.user_id == user_id) & (UserTenant.status == StatusEnum.VALID.value))
+        ).where(cls.model.status == StatusEnum.VALID.value)
+        
+        if role:
+            query = query.where(cls.model.role == role)
+        
+        return list(query.dicts())
 
     @classmethod
     @DB.connection_context()
